@@ -6,7 +6,7 @@
   "license": "ISC",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
+    "build": "webpack --mode=production",
     "export-fb": "node ./bin/export.js --platform facebook --input ./test/bin/ --output ./build/ --min",
     "export-h5": "node ./bin/export.js --platform h5 --input ./test/bin/ --output ./build/ --min",
     "export-wx": "node ./bin/export.js --platform wechat --input ./test/bin/ --output ./build/ --min --env prod"
@@ -46,8 +46,8 @@
     "babel-preset-env": "^1.6.0",
     "string-replace-loader": "^2.1.1",
     "uglifyjs-webpack-plugin": "^1.2.2",
-    "webpack": "^4.12.0",
-    "webpack-cli": "^3.0.6"
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.0"
   },
   "keywords": [
     "layaair",

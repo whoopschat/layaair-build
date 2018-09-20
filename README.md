@@ -1,5 +1,5 @@
 ﻿# layaair-export
-> export layaair project to H5 Game or WeChat game or Facebook game project.
+> export LayaAir project to H5 Game or WeChat game or Facebook game project.
 
 ### Install
 ``` 
@@ -7,7 +7,7 @@
 ```
 ### Usage
 ```
-> minipack
+> layaair-export
   Usage: layaair-export [options]
   --input            input dir
   --output           output dir
