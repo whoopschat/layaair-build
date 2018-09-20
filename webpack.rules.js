@@ -23,28 +23,6 @@ const rules = [{
             replace: version,
         }
     }],
-}, {
-    test: /\.(svg|png|jpg|gif)$/,
-    use: [{
-        loader: 'url-loader',
-        options: {
-            limit: 8192,
-        },
-    }],
-}, {
-    test: /\.css$/,
-    use: [{
-        loader: 'style-loader',
-    }, {
-        loader: 'css-loader',
-    }, {
-        loader: 'postcss-loader',
-        options: {
-            plugins: () => [
-                require('autoprefixer')(),
-            ],
-        },
-    }],
 }];
 
 module.exports = rules;
