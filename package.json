@@ -1,6 +1,6 @@
 {
   "name": "layaair-export",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "export LayaAir project to H5 Game or WeChat game or Facebook game project.",
   "author": "liangmayong",
   "license": "ISC",
