@@ -17,7 +17,7 @@ const callExec = function (cmd, dir, success) {
 const call = (cwd = '') => {
     console.log('start export...\n');
     process.argv.push('--bincwd', process.cwd());
-    callExec("node node_modules/gulp/bin/gulp.js --gulpfile ./bin/gulp/gulpfile.js --cwd " + packDir + " build " + process.argv.slice(2).join(' '), cwd, function () {
+    callExec("node node_modules/gulp/bin/gulp.js --gulpfile " + packDir + "./bin/gulp/gulpfile.js --cwd " + packDir + " build " + process.argv.slice(2).join(' '), cwd, function () {
         console.log('export complete.\n');
     });
 }
