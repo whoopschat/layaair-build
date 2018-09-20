@@ -1,0 +1,11 @@
+
+# test file and build output
+test/
+build/
+# npm modules
+node_modules/
+
+# vim temp file
+*.swp
+# macOS generated
+.DS_Store
