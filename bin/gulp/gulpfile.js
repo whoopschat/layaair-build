@@ -13,6 +13,14 @@ const gulp = require('gulp');
 const minimist = require('minimist');
 const program = minimist(process.argv.slice(2), []);
 
+if (!program.platform) {
+    program.platform = 'h5';
+}
+
+if (!program.x) {
+    console.log(`build to ...${program.platform}`);
+}
+
 if (program.input) {
     program.input = (program.bincwd || '.') + "/" + program.input;
 }
@@ -56,24 +64,28 @@ const begin = () => {
     return false;
 }
 
-gulp.task('error', Empty.emptyTask(() => {
+gulp.task('help', Empty.emptyTask(() => {
     console.log("");
     console.log("");
-    console.log("Usage: layaair-export [options]");
+    console.log("Usage: layaair-build [options]");
     console.log("  --input            input dir");
     console.log("  --output           output dir");
-    console.log("  --platform         h5 || wechat || facebook");
+    console.log("  --platform         [Optional] h5 || wechat || facebook def: h5");
     console.log("  --index            [Optional] index .html file def: index.html");
     console.log("  --env              [Optional] development || production(prod)");
     console.log("  --jsfile           [Optional] jsfile def: code.js");
     console.log("  --pngquality       [Optional] png quality def: 65-80");
-    console.log("  --appid            [Optional] app_id");
-    console.log("  --projectname      [Optional] project_name");
+    console.log("  --appid            [Optional] app id");
+    console.log("  --projectname      [Optional] project name");
     console.log("  --orientation      [Optional] orientation");
     console.log("  --force            [Optional] [bool] ignore 'platform'-game.lock");
     console.log("  --min              [Optional] [bool] uglify js");
+    console.log("  --x                [Optional] show this help");
     console.log("");
     console.log("");
+    if (!program.x) {
+        throw 'Invalid Parameters'
+    }
 }));
 
 gulp.task('clean', Clean.cleanTask(program.output, `${program.platform}-game.lock`, program.force));
@@ -90,10 +102,10 @@ gulp.task('zip', Zipe.zipTask(program.platform, program.output));
 
 gulp.task('build', function (done) {
     let tasks = [];
-    if (begin()) {
-        tasks.push('clean', 'resources', 'pngquant', 'mergejs', 'template', 'zip');
+    if (program.x || !begin()) {
+        tasks.push('help');
     } else {
-        tasks.push('error');
+        tasks.push('clean', 'resources', 'pngquant', 'mergejs', 'template', 'zip');
     }
     return gulp.series(tasks)(done);
 });

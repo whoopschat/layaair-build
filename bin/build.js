@@ -6,19 +6,26 @@ const packDir = __dirname + '/../';
 const callExec = function (cmd, dir, success) {
     exec(cmd, { cwd: dir }, function (error, stdout, stderr) {
         if (error != null && stderr != null) {
-            console.log(stderr, error);
+            success && success(stderr, error);
         } else {
-            console.log(stdout);
-            success && success();
+            success && success(stdout);
         }
     });
 };
 
 const call = (cwd = '') => {
-    console.log('start export...\n');
+    console.log('start build...\n');
     process.argv.push('--bincwd', process.cwd());
-    callExec("node node_modules/gulp/bin/gulp.js --gulpfile " + packDir + "./bin/gulp/gulpfile.js --cwd " + packDir + " build " + process.argv.slice(2).join(' '), cwd, function () {
-        console.log('export complete.\n');
+    callExec("node node_modules/gulp/bin/gulp.js --gulpfile " + packDir + "./bin/gulp/gulpfile.js --cwd " + packDir + " build " + process.argv.slice(2).join(' '), cwd, function (stdout, error) {
+        if (error) {
+            console.log(stdout, error);
+            console.log('');
+            console.log('build fail.\n');
+        } else {
+            console.log(stdout);
+            console.log('');
+            console.log('build complete.\n');
+        }
     });
 }
 

@@ -11,13 +11,16 @@
   Usage: layaair-build [options]
   --input            input dir
   --output           output dir
-  --platform         wechat || facebook
+  --platform         h5 || wechat || facebook def: h5
   --index            [Optional] index .html file def: index.html
   --env              [Optional] development || production
   --jsfile           [Optional] jsfile def: code.js
   --pngquality       [Optional] png quality def: 65-80
-  --appid            [Optional] app_id
-  --projectname      [Optional] project_name
+  --appid            [Optional] app id
+  --projectname      [Optional] project name
   --orientation      [Optional] orientation
+  --force            [Optional] [bool] force replace template
+  --min              [Optional] [bool] uglify js
+  --x                [Optional] show this help
 
 ```

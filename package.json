@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode=production",
     "export-fb": "node ./bin/build.js --platform facebook --input ./test/bin/ --output ./build/ --min",
-    "export-h5": "node ./bin/build.js --platform h5 --input ./test/bin/ --output ./build/ --min",
+    "export-h5": "node ./bin/build.js --output ./build/ --min --x",
     "export-wx": "node ./bin/build.js --platform wechat --input ./test/bin/ --output ./build/ --min --env prod"
   },
   "repository": {
