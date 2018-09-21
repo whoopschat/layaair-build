@@ -1,5 +1,5 @@
 ﻿# layaair-build
-> build LayaAir project to H5 Game or WeChat game or Facebook game project.
+> build LayaAir project to `H5 game` or `WeChat game` or `Facebook game` project.
 
 ### Install
 ``` 

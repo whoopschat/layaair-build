@@ -1,7 +1,7 @@
 {
   "name": "layaair-build",
   "version": "1.0.0",
-  "description": "build LayaAir project to H5 Game or WeChat game or Facebook game project.",
+  "description": "build LayaAir project to H5 game or WeChat game or Facebook game project.",
   "author": "liangmayong",
   "license": "ISC",
   "scripts": {
