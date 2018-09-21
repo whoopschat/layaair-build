@@ -3,6 +3,7 @@ const path = require('path');
 const File = require('./utils/file');
 const Html = require('./utils/html');
 const Empty = require('./tasks/empty');
+const Test = require('./tasks/bin');
 const Clean = require('./tasks/clean');
 const Resources = require('./tasks/resources');
 const Pngquant = require('./tasks/pngquant');
@@ -27,7 +28,9 @@ if (program.input) {
     program.input = (program.bincwd || '.') + "/" + program.input;
 }
 
+
 if (program.output) {
+    program.bin = (program.bincwd || '.') + "/" + program.output + "/bin";
     program.output = (program.bincwd || '.') + "/" + program.output + "/" + program.platform;
 }
 
@@ -90,6 +93,8 @@ gulp.task('help', Empty.emptyTask(() => {
     }
 }));
 
+gulp.task('copybin', Test.testTask('./dist/bin', program.bin, 'bin-game.lock'));
+
 gulp.task('clean', Clean.cleanTask(program.output, `${program.platform}-game.lock`, program.force));
 
 gulp.task('resources', Resources.resourcesTask(program.input, program.output));
@@ -107,7 +112,7 @@ gulp.task('build', function (done) {
     if (program.x || !begin()) {
         tasks.push('help');
     } else {
-        tasks.push('clean', 'resources', 'pngquant', 'mergejs', 'template', 'zip');
+        tasks.push('copybin', 'clean', 'resources', 'pngquant', 'mergejs', 'template', 'zip');
     }
     return gulp.series(tasks)(() => {
         done();
