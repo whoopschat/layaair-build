@@ -11,7 +11,7 @@
   Usage: layaair-build [options]
   --input            input dir
   --output           output dir
-  --platform         h5 || wechat || facebook def: h5
+  --platform         [Optional] h5 || wechat || facebook def: h5
   --index            [Optional] index .html file def: index.html
   --env              [Optional] development || production
   --jsfile           [Optional] jsfile def: code.js

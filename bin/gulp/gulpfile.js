@@ -1,4 +1,5 @@
 'use strict';
+const path = require('path');
 const File = require('./utils/file');
 const Html = require('./utils/html');
 const Empty = require('./tasks/empty');
@@ -19,6 +20,7 @@ if (!program.platform) {
 
 if (!program.x) {
     console.log(`build to ...${program.platform}`);
+    console.log('');
 }
 
 if (program.input) {
@@ -107,5 +109,9 @@ gulp.task('build', function (done) {
     } else {
         tasks.push('clean', 'resources', 'pngquant', 'mergejs', 'template', 'zip');
     }
-    return gulp.series(tasks)(done);
+    return gulp.series(tasks)(() => {
+        done();
+        console.log('');
+        console.log(`output : ${path.relative(program.bincwd, program.output)}`);
+    });
 });
