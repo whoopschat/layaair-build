@@ -1,19 +1,19 @@
 {
-  "name": "layaair-export",
+  "name": "layaair-build",
   "version": "1.0.0",
-  "description": "export LayaAir project to H5 Game or WeChat game or Facebook game project.",
+  "description": "build LayaAir project to H5 Game or WeChat game or Facebook game project.",
   "author": "liangmayong",
   "license": "ISC",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode=production",
-    "export-fb": "node ./bin/export.js --platform facebook --input ./test/bin/ --output ./build/ --min",
-    "export-h5": "node ./bin/export.js --platform h5 --input ./test/bin/ --output ./build/ --min",
-    "export-wx": "node ./bin/export.js --platform wechat --input ./test/bin/ --output ./build/ --min --env prod"
+    "export-fb": "node ./bin/build.js --platform facebook --input ./test/bin/ --output ./build/ --min",
+    "export-h5": "node ./bin/build.js --platform h5 --input ./test/bin/ --output ./build/ --min",
+    "export-wx": "node ./bin/build.js --platform wechat --input ./test/bin/ --output ./build/ --min --env prod"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/whoopschat/layaair-export.git"
+    "url": "git+https://github.com/whoopschat/layaair-build.git"
   },
   "engines": {
     "node": ">= 0.10"
@@ -23,7 +23,7 @@
     "bin"
   ],
   "bin": {
-    "layaair-export": "./bin/export.js"
+    "layaair-build": "./bin/build.js"
   },
   "dependencies": {
     "cheerio": "*",

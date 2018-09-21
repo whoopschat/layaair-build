@@ -1,14 +1,14 @@
-﻿# layaair-export
-> export LayaAir project to H5 Game or WeChat game or Facebook game project.
+﻿# layaair-build
+> build LayaAir project to H5 Game or WeChat game or Facebook game project.
 
 ### Install
 ``` 
-> npm install layaair-export
+> npm install layaair-build
 ```
 ### Usage
 ```
-> layaair-export
-  Usage: layaair-export [options]
+> layaair-build
+  Usage: layaair-build [options]
   --input            input dir
   --output           output dir
   --platform         wechat || facebook
