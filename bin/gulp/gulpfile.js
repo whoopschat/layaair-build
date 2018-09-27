@@ -14,20 +14,21 @@ const Zipe = require('./tasks/zip');
 const gulp = require('gulp');
 const minimist = require('minimist');
 const program = minimist(process.argv.slice(2), []);
+const app_version = program.version || File.readJson((program.bincwd || '.') + '/package.json').version || '1.0.0';
 
 if (!program.platform) {
     program.platform = 'h5';
 }
 
 if (!program.x) {
-    console.log(`build to ...${program.platform}`);
+    console.log(`build to ... ${program.platform}`);
+    console.log(`build version ... ${app_version}`);
     console.log('');
 }
 
 if (program.input) {
     program.input = (program.bincwd || '.') + "/" + program.input;
 }
-
 
 if (program.output) {
     program.bin = (program.bincwd || '.') + "/" + program.output + "/bin";
@@ -51,6 +52,7 @@ const initReplaceList = (htmlFile) => {
     let app_id = program.appid || Html.readValue({ file: htmlFile, selector: 'meta', attribute: 'appid' }, "touristappid");
     replaceList.push(['${app_id}', app_id]);
     replaceList.push(['"${is_game_tourist}"', app_id === 'touristappid']);
+    replaceList.push(['${app_version}', app_version]);
     replaceList.push(['${orientation}', orientation]);
     replaceList.push(['${project_name}', projectname]);
     replaceList.push(['${env}', program.env || 'development']);
@@ -58,14 +60,33 @@ const initReplaceList = (htmlFile) => {
 }
 
 const begin = () => {
-    if ((program.platform == 'wechat' || program.platform == 'facebook' || program.platform == 'h5')
-        && program.input && program.output) {
+    let platforms = ['wechat', 'facebook', 'h5'];
+    let checkPlatform = platforms.indexOf(program.platform) >= 0;
+    let checkInput = !!program.input;
+    let checkOutput = !!program.output;
+    let checkIndex = false;
+    if (checkPlatform && checkInput && checkOutput) {
         let index = `${program.input}/${program.index || 'index.html'}`;
-        if (File.existsSync(index)) {
+        checkIndex = File.existsSync(index);
+        if (checkIndex) {
             initReplaceList(index);
             return true;
         }
     }
+    console.log('');
+    if (!checkPlatform) {
+        console.log('invalid parameters [platform]');
+    }
+    if (!checkInput) {
+        console.log('invalid parameters [input]');
+    }
+    if (!checkOutput) {
+        console.log('invalid parameters [output]');
+    }
+    if (!checkIndex) {
+        console.log('invalid parameters [index]');
+    }
+    console.log('');
     return false;
 }
 
@@ -76,7 +97,8 @@ gulp.task('help', Empty.emptyTask(() => {
     console.log("  --input            input dir");
     console.log("  --output           output dir");
     console.log("  --platform         [Optional] h5 || wechat || facebook def: h5");
-    console.log("  --index            [Optional] index .html file def: index.html");
+    console.log("  --version          [Optional] app version def: read package.json");
+    console.log("  --index            [Optional] index.html file def: index.html");
     console.log("  --env              [Optional] development || production(prod)");
     console.log("  --jsfile           [Optional] jsfile def: code.js");
     console.log("  --pngquality       [Optional] png quality def: 65-80");
@@ -93,7 +115,7 @@ gulp.task('help', Empty.emptyTask(() => {
     }
 }));
 
-gulp.task('copybin', Test.testTask('./dist/bin', program.bin, 'bin-game.lock'));
+gulp.task('copybin', Test.testTask('./dist/bin', program.bin, 'bin.lock'));
 
 gulp.task('clean', Clean.cleanTask(program.output, `${program.platform}-game.lock`, program.force));
 
@@ -114,9 +136,14 @@ gulp.task('build', function (done) {
     } else {
         tasks.push('copybin', 'clean', 'resources', 'pngquant', 'mergejs', 'template', 'zip');
     }
-    return gulp.series(tasks)(() => {
+    return gulp.series(tasks)((error) => {
         done();
         console.log('');
-        console.log(`output : ${path.relative(program.bincwd, program.output)}`);
+        if (error) {
+            console.log(`Error: ${error.message}`);
+        } else {
+            console.log(`output : ${path.relative(program.bincwd, program.output)}`);
+            console.log('build complete.\n');
+        }
     });
 });

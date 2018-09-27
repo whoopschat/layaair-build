@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const createFolderSync = function (file) {
+function createFolderSync(file) {
     try {
         var sep = path.sep
         var folders = path.dirname(file).split(sep);
@@ -17,14 +17,14 @@ const createFolderSync = function (file) {
     }
 }
 
-const deleteFileSync = function (path) {
+function deleteFileSync(path) {
     try {
         fs.unlinkSync(path);
     } catch (error) {
     }
 }
 
-const deleteFolderSync = function (path) {
+function deleteFolderSync(path) {
     try {
         var files = [];
         if (fs.existsSync(path)) {
@@ -44,18 +44,33 @@ const deleteFolderSync = function (path) {
     } catch (error) {
         console.log(error);
     }
-};
+}
 
-const createFileSync = function (file, content) {
+function createFileSync(file, content) {
     createFolderSync(file);
     fs.createWriteStream(file);
     fs.writeFileSync(file, content);
-};
+}
 
-const existsSync = function (file) {
+function existsSync(file) {
     return fs.existsSync(file);
-};
+}
+
+function readJson(file) {
+    if (existsSync(file)) {
+        try {
+            return JSON.parse(fs.readFileSync(file));
+        } catch (error) {
+        }
+    }
+    return {};
+}
 
 module.exports = {
-    createFileSync, createFolderSync, deleteFolderSync, existsSync, deleteFileSync
+    createFileSync,
+    createFolderSync,
+    deleteFolderSync,
+    existsSync,
+    deleteFileSync,
+    readJson,
 }

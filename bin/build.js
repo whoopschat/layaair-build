@@ -1,7 +1,9 @@
 #!/usr/bin/env node
+const chalk = require('chalk');
+const path = require('path');
 const fs = require("fs");
 const exec = require('child_process').exec;
-const packDir = __dirname + '/../';
+const packDir = path.join(__dirname, '/../');
 
 const callExec = function (cmd, dir, success) {
     exec(cmd, { cwd: dir }, function (error, stdout, stderr) {
@@ -16,20 +18,20 @@ const callExec = function (cmd, dir, success) {
 const call = (cwd = '') => {
     console.log('start build...\n');
     process.argv.push('--bincwd', process.cwd());
-    callExec("node node_modules/gulp/bin/gulp.js --gulpfile " + packDir + "./bin/gulp/gulpfile.js --cwd " + packDir + " build " + process.argv.slice(2).join(' '), cwd, function (stdout, error) {
-        if (error) {
-            console.log(stdout, error);
+    let gulpfile = path.join(packDir, './bin/gulp/gulpfile.js');
+    let gulpcwd = path.join(packDir);
+    callExec("node node_modules/gulp/bin/gulp.js --gulpfile " + gulpfile + " --cwd " + gulpcwd + " build " + process.argv.slice(2).join(' '), cwd, function (stdout, error) {
+        if (stdout.indexOf('Error:') >= 0) {
+            console.log(chalk.red(stdout));
             console.log('');
-            console.log('build fail.\n');
         } else {
-            console.log(stdout);
+            console.log(chalk.cyan(stdout));
             console.log('');
-            console.log('build complete.\n');
         }
     });
 }
 
-fs.exists(packDir + "node_modules/gulp/bin/gulp.js", function (exists) {
+fs.exists(path.join(packDir, "node_modules/gulp/bin/gulp.js"), function (exists) {
     call(exists ? packDir : '');
 });
 
