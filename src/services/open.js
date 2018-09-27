@@ -19,7 +19,8 @@ let _designWidth = 0;
 let _designHeight = 0;
 
 const init = (onMessage) => {
-    console.log("WXRank", 'init,version:${version}');
+    printLog('init...');
+    printLog('wxrank version:${version}');
     Laya.MiniAdpter.init(true, true);
     Laya.init(750, 1334);
     _onMessage((msg) => {
@@ -34,7 +35,7 @@ const init = (onMessage) => {
                     delete Laya['MiniFileMgr']['filesListObj'][msg.url];
                 }
             } else {
-                printDebug("OnMessage:", msg);
+                printDebug("message:", msg);
                 if (msg.action && msg.action === 'initRank' && msg.data) {
                     Laya.stage.width = msg.data.width;
                     Laya.stage.height = msg.data.height;
@@ -78,6 +79,10 @@ function getUserInfo(options = {}) {
     _execWX('getUserInfo', options);
 }
 
+function printLog(message, ...options) {
+    console.log("WXRank:", message, ...options);
+}
+
 function printDebug(message, ...options) {
     if (_env != 'production') {
         console.log("WXRank:", message, ...options);
@@ -113,4 +118,5 @@ export default {
     getGroupCloudStorage,
     getUserInfo,
     printDebug,
+    printLog,
 }
