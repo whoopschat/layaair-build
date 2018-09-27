@@ -80,7 +80,7 @@ function getUserInfo(options = {}) {
 
 function printDebug(message, ...options) {
     if (_env != 'production') {
-        console.log("WXRank", message, ...options);
+        console.log("WXRank:", message, ...options);
     }
 }
 

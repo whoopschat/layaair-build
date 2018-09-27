@@ -13,7 +13,6 @@ function createFolderSync(file) {
             }
         }
     } catch (error) {
-        console.log(error);
     }
 }
 
@@ -42,7 +41,6 @@ function deleteFolderSync(path) {
             fs.rmdirSync(path);
         }
     } catch (error) {
-        console.log(error);
     }
 }
 
