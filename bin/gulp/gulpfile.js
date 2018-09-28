@@ -10,6 +10,7 @@ const Pngquant = require('./tasks/pngquant');
 const Template = require('./tasks/template');
 const Mergejs = require('./tasks/mergejs');
 const Zipe = require('./tasks/zip');
+const Publish = require('./tasks/publish');
 
 const gulp = require('gulp');
 const minimist = require('minimist');
@@ -27,12 +28,12 @@ if (!program.x) {
 }
 
 if (program.input) {
-    program.input = (program.bincwd || '.') + "/" + program.input;
+    program.input = path.join((program.bincwd || '.') + "/" + program.input);
 }
 
 if (program.output) {
-    program.bin = (program.bincwd || '.') + "/" + program.output + "/bin";
-    program.output = (program.bincwd || '.') + "/" + program.output + "/" + program.platform;
+    program.bin = path.join((program.bincwd || '.') + "/" + program.output + "/bin");
+    program.output = path.join((program.bincwd || '.') + "/" + program.output + "/" + program.platform);
 }
 
 if (program.env) {
@@ -41,6 +42,8 @@ if (program.env) {
     } else {
         program.env = 'development';
     }
+} else {
+    program.env = 'development';
 }
 
 const replaceList = [
@@ -55,7 +58,7 @@ const initReplaceList = (htmlFile) => {
     replaceList.push(['${app_version}', app_version]);
     replaceList.push(['${orientation}', orientation]);
     replaceList.push(['${project_name}', projectname]);
-    replaceList.push(['${env}', program.env || 'development']);
+    replaceList.push(['${env}', program.env]);
     replaceList.push(['${codeJs}', program.jsfile || 'code.js']);
 }
 
@@ -107,6 +110,7 @@ gulp.task('help', Empty.emptyTask(() => {
     console.log("  --orientation      [Optional] orientation");
     console.log("  --force            [Optional] [bool] ignore 'platform'-game.lock");
     console.log("  --min              [Optional] [bool] uglify js");
+    console.log("  --publish          [Optional] [bool] publish project");
     console.log("  --x                [Optional] show this help");
     console.log("");
     console.log("");
@@ -129,18 +133,29 @@ gulp.task('template', Template.templateTask(`./dist/${program.platform}`, progra
 
 gulp.task('zip', Zipe.zipTask(program.platform, program.output));
 
+gulp.task('publish', Publish.publishTask(program.platform, program.output, program.env, app_version));
+
 gulp.task('build', function (done) {
     let tasks = [];
     if (program.x || !begin()) {
         tasks.push('help');
     } else {
-        tasks.push('copybin', 'clean', 'resources', 'pngquant', 'mergejs', 'template', 'zip');
+        tasks.push('copybin');
+        tasks.push('clean');
+        tasks.push('resources');
+        tasks.push('pngquant');
+        tasks.push('mergejs');
+        tasks.push('template');
+        tasks.push('zip');
+        if (program.publish) {
+            tasks.push('publish');
+        }
     }
     return gulp.series(tasks)((error) => {
         done();
         console.log('');
         if (error) {
-            console.log(`Error: ${error.message}`);
+            console.log(`build error: ${error.message}`);
         } else {
             console.log(`output : ${path.relative(program.bincwd, program.output)}`);
             console.log('build complete.\n');

@@ -1,10 +1,11 @@
-﻿## layaair-build
+﻿# layaair-build
 > build LayaAir project to `H5 game` or `WeChat game` or `Facebook game` project.
 
 ### Install
 ``` 
 > npm install layaair-build
 ```
+
 ### Usage
 ```
 > layaair-build
@@ -22,6 +23,7 @@
   --orientation      [Optional] orientation
   --force            [Optional] [bool] force replace template
   --min              [Optional] [bool] uglify js
+  --publish          [Optional] [bool] publish project
   --x                [Optional] show this help
 
 ```
