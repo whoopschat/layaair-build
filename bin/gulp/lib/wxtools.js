@@ -15,32 +15,31 @@ function fetchCli(cb) {
             cb && cb(path.join(devtoolsPath));
         }, 'cp936');
     } else {
-        cb && cb('');
+        cb && cb('--');
     }
 }
 
 function upload(ver, src, desc, cb) {
     fetchCli((cli) => {
         if (!fs.existsSync(cli)) {
-            console.log("");
+            console.log('');
             console.log('cannot find installed wechatdevtools', cli);
-            console.log("");
+            console.log('');
             cb && cb();
         } else {
-            exec.execute(`"${cli}" -u ${ver}@${src} --upload-desc "${desc}"`, null, (_error, stdout, _stderr) => {
-                console.log("");
-                if (stdout.indexOf('upload success') >= 0) {
-                    console.log("publish success");
+            exec.execute(`"${cli}" -u ${ver}@${src} --upload-desc "${desc}"`, null, (_error, stdout, stderr) => {
+                console.log('');
+                if (stderr.indexOf('upload success') >= 0) {
+                    console.log(`upload success: ${desc}`);
                 } else {
-                    console.log("");
                     let match = /body:\s+(\S.+)/.exec(stdout);
-                    if (match) {
-                        console.log(`publish fail: ${match[1].replace('\' } }', '').replace('\'', '')}`);
+                    if (match && match.length > 1) {
+                        console.log(`upload fail: ${match[1].replace('\' } }', '').replace('\'', '')}`);
                     } else {
-                        console.log('publish fail: unkown');
+                        console.log(`upload fail: Unknown`);
                     }
                 }
-                console.log("");
+                console.log('');
                 cb && cb();
             }, 'utf-8');
         }
