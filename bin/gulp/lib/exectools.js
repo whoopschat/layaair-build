@@ -1,12 +1,18 @@
+const execSh = require('exec-sh');
 const iconv = require('iconv-lite');
-const exec = require('child_process').exec;
+const child_process = require('child_process');
 
-function execute(cmd, options, callback, encode = 'utf-8') {
-    exec(cmd, Object.assign(options || {}, { encoding: 'buffer' }), function (error, stdout, stderr) {
+function exec(cmd, options, callback, encode = 'utf-8') {
+    child_process.exec(cmd, Object.assign(options || {}, { encoding: 'buffer' }), function (error, stdout, stderr) {
         callback && callback(error, iconv.decode(stderr, encode), iconv.decode(stdout, encode));
     });
 }
 
+function shell(cmd, options) {
+    execSh(cmd, options);
+}
+
 module.exports = {
-    execute
+    exec,
+    shell,
 }

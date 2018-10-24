@@ -1,12 +1,13 @@
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
 const exec = require('./exectools');
 
 function fetchCli(cb) {
     if (process.platform == 'darwin') {
         cb && cb('/Applications/wechatwebdevtools.app/Contents/Resources/app.nw/bin/cli');
     } else if (process.platform == 'win32') {
-        exec.execute('reg query "HKLM\\SOFTWARE\\WOW6432Node\\Tencent\\微信web开发者工具" /ve', null, (_error, _stdout, stderr) => {
+        exec.exec('reg query "HKLM\\SOFTWARE\\WOW6432Node\\Tencent\\微信web开发者工具" /ve', null, (_error, _stdout, stderr) => {
             let match = /REG_SZ\s+(\S.+)/.exec(stderr);
             let devtoolsPath = '';
             if (match) {
@@ -27,16 +28,16 @@ function upload(ver, src, desc, cb) {
             console.log('');
             cb && cb();
         } else {
-            exec.execute(`"${cli}" -u ${ver}@${src} --upload-desc "${desc}"`, null, (_error, stdout, stderr) => {
+            exec.exec(`"${cli}" -u ${ver}@${src} --upload-desc "${desc}"`, null, (_error, stdout, stderr) => {
                 console.log('');
                 if (stderr.indexOf('upload success') >= 0) {
                     console.log(`upload success: ${desc}`);
                 } else {
                     let match = /body:\s+(\S.+)/.exec(stdout);
                     if (match && match.length > 1) {
-                        console.log(`upload fail: ${match[1].replace('\' } }', '').replace('\'', '')}`);
+                        console.log(chalk.red(`upload fail: ${match[1].replace('\' } }', '').replace('\'', '')}`));
                     } else {
-                        console.log(`upload fail: Unknown`);
+                        console.log(chalk.red(`upload fail: Unknown`));
                     }
                 }
                 console.log('');

@@ -1,4 +1,5 @@
 'use strict';
+const chalk = require('chalk');
 const path = require('path');
 const File = require('./utils/file');
 const Html = require('./utils/html');
@@ -22,8 +23,8 @@ if (!program.platform) {
 }
 
 if (!program.x) {
-    console.log(`build to ... ${program.platform}`);
-    console.log(`build version ... ${app_version}`);
+    console.log(`build to ... `, chalk.yellow(program.platform));
+    console.log(`build version ... `, chalk.yellow(app_version));
     console.log('');
 }
 
@@ -63,7 +64,7 @@ const initReplaceList = (htmlFile) => {
 }
 
 const begin = () => {
-    let platforms = ['wechat', 'facebook', 'h5'];
+    let platforms = ['h5', 'wechat', 'qq', 'facebook'];
     let checkPlatform = platforms.indexOf(program.platform) >= 0;
     let checkInput = !!program.input;
     let checkOutput = !!program.output;
@@ -155,10 +156,10 @@ gulp.task('build', function (done) {
         done();
         console.log('');
         if (error) {
-            console.log(`build error: ${error.message}`);
+            console.log(chalk.red(`build error: ${error.message}`));
         } else {
-            console.log(`output : ${path.relative(program.bincwd, program.output)}`);
-            console.log('build complete.\n');
+            console.log(chalk.yellow(`output : ${path.relative(program.bincwd, program.output)}`));
+            console.log(chalk.yellow('build complete.\n'));
         }
     });
 });
