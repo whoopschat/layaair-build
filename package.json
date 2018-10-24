@@ -1,6 +1,6 @@
 {
   "name": "layaair-build",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "build LayaAir project to H5 game or WeChat game or Facebook game project.",
   "author": "liangmayong",
   "license": "ISC",
@@ -9,7 +9,7 @@
     "build": "webpack --mode=production",
     "build-fb": "node ./bin/build.js --platform facebook --input ./test/bin/ --output ./build/ --min",
     "build-h5": "node ./bin/build.js --platform h5 --output ./build/ --input ./test/bin/ --min",
-    "build-qq": "node ./bin/build.js --platform qq --output ./build/ --input ./test/bin/ --min",
+    "build-qq": "node ./bin/build.js --platform qq --output ./build/ --input ./test/bin/ --min --minpng",
     "build-wx": "node ./bin/build.js --platform wechat --input ./test/bin/ --output ./build/ --min --env prod --publish"
   },
   "repository": {

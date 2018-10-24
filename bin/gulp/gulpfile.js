@@ -111,6 +111,7 @@ gulp.task('help', Empty.emptyTask(() => {
     console.log("  --orientation      [Optional] orientation");
     console.log("  --force            [Optional] [bool] ignore 'platform'-game.lock");
     console.log("  --min              [Optional] [bool] uglify js");
+    console.log("  --minpng           [Optional] [bool] use pngquant");
     console.log("  --publish          [Optional] [bool] publish project");
     console.log("  --x                [Optional] show this help");
     console.log("");
@@ -144,7 +145,9 @@ gulp.task('build', function (done) {
         tasks.push('copybin');
         tasks.push('clean');
         tasks.push('resources');
-        tasks.push('pngquant');
+        if (program.minpng || program.env === 'production') {
+            tasks.push('pngquant');
+        }
         tasks.push('mergejs');
         tasks.push('template');
         tasks.push('zip');

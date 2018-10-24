@@ -23,6 +23,7 @@
   --orientation      [Optional] orientation
   --force            [Optional] [bool] force replace template
   --min              [Optional] [bool] uglify js
+  --minpng           [Optional] [bool] use pngquant
   --publish          [Optional] [bool] publish project
   --x                [Optional] show this help
 
