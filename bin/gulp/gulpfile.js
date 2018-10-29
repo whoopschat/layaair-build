@@ -16,11 +16,34 @@ const Publish = require('./tasks/publish');
 const gulp = require('gulp');
 const minimist = require('minimist');
 const program = minimist(process.argv.slice(2), []);
-const app_version = program.version || File.readJson((program.bincwd || '.') + '/package.json').version || '1.0.0';
 
 if (!program.platform) {
     program.platform = 'h5';
 }
+
+if (!program.buildnum) {
+    program.buildnum = 0;
+}
+
+if (program.env) {
+    if (program.env === 'prod' || program.env === 'production') {
+        program.env = 'production';
+    } else {
+        program.env = 'development';
+    }
+} else {
+    program.env = 'development';
+}
+
+if (!program.jsfile) {
+    program.jsfile = 'code.js';
+}
+
+if (!program.index) {
+    program.index = 'index.html';
+}
+
+const app_version = `${program.version || File.readJson((program.bincwd || '.') + '/package.json').version || '1.0'}.${program.buildnum}`;
 
 if (!program.x) {
     console.log(`build to ... `, chalk.yellow(program.platform));
@@ -37,16 +60,6 @@ if (program.output) {
     program.output = path.join((program.bincwd || '.') + "/" + program.output + "/" + program.platform);
 }
 
-if (program.env) {
-    if (program.env === 'prod' || program.env === 'production') {
-        program.env = 'production';
-    } else {
-        program.env = 'development';
-    }
-} else {
-    program.env = 'development';
-}
-
 const replaceList = [
 ]
 
@@ -60,7 +73,7 @@ const initReplaceList = (htmlFile) => {
     replaceList.push(['${orientation}', orientation]);
     replaceList.push(['${project_name}', projectname]);
     replaceList.push(['${env}', program.env]);
-    replaceList.push(['${codeJs}', program.jsfile || 'code.js']);
+    replaceList.push(['${codeJs}', `${program.jsfile}?ct=${Date.now()}`]);
 }
 
 const begin = () => {
@@ -70,7 +83,7 @@ const begin = () => {
     let checkOutput = !!program.output;
     let checkIndex = false;
     if (checkPlatform && checkInput && checkOutput) {
-        let index = `${program.input}/${program.index || 'index.html'}`;
+        let index = `${program.input}/${program.index}`;
         checkIndex = File.existsSync(index);
         if (checkIndex) {
             initReplaceList(index);
@@ -79,20 +92,24 @@ const begin = () => {
     }
     console.log('');
     if (!checkPlatform) {
-        console.log('invalid parameters [platform]');
+        console.log(chalk.red('ERROR:invalid parameters [platform]'));
     }
     if (!checkInput) {
-        console.log('invalid parameters [input]');
+        console.log(chalk.red('ERROR:invalid parameters [input]'));
     }
     if (!checkOutput) {
-        console.log('invalid parameters [output]');
+        console.log(chalk.red('ERROR:invalid parameters [output]'));
     }
     if (!checkIndex) {
-        console.log('invalid parameters [index]');
+        console.log(chalk.red('ERROR:invalid parameters [index]'));
     }
     console.log('');
     return false;
 }
+
+gulp.task('error', Empty.emptyTask(() => {
+    throw new Error('Invalid Parameters');
+}));
 
 gulp.task('help', Empty.emptyTask(() => {
     console.log("");
@@ -101,24 +118,22 @@ gulp.task('help', Empty.emptyTask(() => {
     console.log("  --input            input dir");
     console.log("  --output           output dir");
     console.log("  --platform         [Optional] h5 || wechat || facebook def: h5");
-    console.log("  --version          [Optional] app version def: read package.json");
-    console.log("  --index            [Optional] index.html file def: index.html");
     console.log("  --env              [Optional] development || production(prod)");
+    console.log("  --index            [Optional] index.html file def: index.html");
+    console.log("  --version          [Optional] version code def: read package.json");
+    console.log("  --buildnum         [Optional] version build num def: 0");
     console.log("  --jsfile           [Optional] jsfile def: code.js");
-    console.log("  --pngquality       [Optional] png quality def: 65-80");
     console.log("  --appid            [Optional] app id");
     console.log("  --projectname      [Optional] project name");
     console.log("  --orientation      [Optional] orientation");
-    console.log("  --force            [Optional] [bool] ignore 'platform'-game.lock");
-    console.log("  --min              [Optional] [bool] uglify js");
     console.log("  --minpng           [Optional] [bool] use pngquant");
+    console.log("  --pngquality       [Optional] png quality def: 65-80");
+    console.log("  --min              [Optional] [bool] uglify js");
     console.log("  --publish          [Optional] [bool] publish project");
+    console.log("  --force            [Optional] [bool] ignore 'platform'-game.lock");
     console.log("  --x                [Optional] show this help");
     console.log("");
     console.log("");
-    if (!program.x) {
-        throw 'Invalid Parameters'
-    }
 }));
 
 gulp.task('copybin', Test.testTask('./dist/bin', program.bin, 'bin.lock'));
@@ -129,7 +144,7 @@ gulp.task('resources', Resources.resourcesTask(program.input, program.output));
 
 gulp.task('pngquant', Pngquant.pngquantTask(program.input, program.output, program.pngquality || '65-80'));
 
-gulp.task('mergejs', Mergejs.mergejsTask(`${program.input}/${program.index || 'index.html'}`, program.output, program.jsfile || 'code.js', program.min || program.env === 'production', replaceList));
+gulp.task('mergejs', Mergejs.mergejsTask(`${program.input}/${program.index}`, program.output, program.jsfile, program.min, replaceList));
 
 gulp.task('template', Template.templateTask(`./dist/${program.platform}`, program.output, replaceList, `${program.platform}-game.lock`, program.force));
 
@@ -139,13 +154,15 @@ gulp.task('publish', Publish.publishTask(program.platform, program.output, progr
 
 gulp.task('build', function (done) {
     let tasks = [];
-    if (program.x || !begin()) {
+    if (program.x) {
         tasks.push('help');
+    } else if (!begin()) {
+        tasks.push('error');
     } else {
         tasks.push('copybin');
         tasks.push('clean');
         tasks.push('resources');
-        if (program.minpng || program.env === 'production') {
+        if (program.minpng) {
             tasks.push('pngquant');
         }
         tasks.push('mergejs');
